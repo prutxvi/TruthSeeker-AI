@@ -103,34 +103,40 @@ export default function HeroAsciiOne() {
         <span className="hidden lg:block text-[10px] font-mono text-white/60">INTEL: CLASSIFIED · STATUS: ACTIVE</span>
       </div>
       
-      <div className="relative z-10 flex min-h-screen items-center justify-end pt-16" style={{ marginTop: '5vh' }}>
-        <div className="w-full lg:w-1/2 px-6 lg:pr-[10%]">
-          <div className="max-w-lg lg:ml-auto">
-            <div className="flex items-center gap-2 mb-4 opacity-60">
-              <div className="w-8 h-px bg-white"/>
+      <div className="relative z-10 flex min-h-screen items-center lg:justify-end pt-16" style={{ marginTop: '5vh' }}>
+        <div className="w-full md:w-3/4 lg:w-1/2 px-4 md:px-6 lg:pr-[10%] mx-auto lg:mx-0 mt-20 lg:mt-0">
+          <div className="max-w-lg lg:ml-auto bg-black/70 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none border border-white/10 lg:border-none p-6 md:p-8 lg:p-0 relative shadow-2xl lg:shadow-none">
+            {/* Corner accents for mobile box */}
+            <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-white/30 lg:hidden" />
+            <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-white/30 lg:hidden" />
+            <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-white/30 lg:hidden" />
+            <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-white/30 lg:hidden" />
+
+            <div className="flex items-center gap-2 mb-4 opacity-70">
+              <div className="w-6 md:w-8 h-px bg-white"/>
               <span className="text-white text-[10px] font-mono">∞</span>
               <div className="flex-1 h-px bg-white"/>
             </div>
-            <h1 className="text-3xl lg:text-5xl font-bold text-white mb-4 font-mono tracking-wider leading-tight">THE TRUTH<br/>THEY HIDE</h1>
-            <div className="flex gap-1 mb-4 opacity-40">
-              {Array.from({ length: 40 }).map((_, i) => (
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 font-mono tracking-widest leading-tight">THE TRUTH<br/>THEY HIDE</h1>
+            <div className="flex gap-1 mb-4 opacity-50">
+              {Array.from({ length: 30 }).map((_, i) => (
                 <div key={i} className="w-0.5 h-0.5 bg-white rounded-full"/>
               ))}
             </div>
-            <p className="text-sm text-gray-300 mb-6 font-mono opacity-80 leading-relaxed">
+            <p className="text-xs sm:text-sm text-gray-300 mb-8 font-mono opacity-90 leading-relaxed">
               Dark psychology. Conspiracy truths. Hidden power. No filters — raw intelligence on demand.
             </p>
-            <div className="flex flex-col lg:flex-row gap-3">
-              <a href="/auth" className="relative px-6 py-2.5 border border-white text-white font-mono text-sm hover:bg-white hover:text-black transition-all group text-center">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <a href="/auth" className="relative px-6 py-3 border border-white text-white font-mono text-xs sm:text-sm hover:bg-white hover:text-black transition-all group text-center tracking-widest font-bold">
                 <span className="absolute -top-1 -left-1 w-2 h-2 border-t border-l border-white opacity-0 group-hover:opacity-100 transition-opacity"/>
                 <span className="absolute -bottom-1 -right-1 w-2 h-2 border-b border-r border-white opacity-0 group-hover:opacity-100 transition-opacity"/>
                 ACCESS THE TRUTH →
               </a>
-              <a href="#demo" className="px-6 py-2.5 border border-white/40 text-white/70 font-mono text-sm hover:bg-white hover:text-black transition-all text-center">
+              <a href="#demo" className="px-6 py-3 border border-white/30 text-white/70 font-mono text-xs sm:text-sm hover:bg-white hover:text-black transition-all text-center tracking-widest">
                 SEE DEMO
               </a>
             </div>
-            <div className="flex items-center gap-2 mt-6 opacity-40">
+            <div className="flex items-center gap-2 mt-8 opacity-40">
               <span className="text-[9px] font-mono text-white">∞</span>
               <div className="flex-1 h-px bg-white"/>
               <span className="text-[9px] font-mono text-white">TRUTH.PROTOCOL.ACTIVE</span>
