@@ -4,7 +4,6 @@
 
 Truth Seeker AI is an elite, hyper-intelligent, and strictly objective analytical chat platform designed to resemble top-tier intelligence briefings. It provides raw, unfiltered analysis exposing mechanisms of control, dark psychology, suppressed history, and geopolitical power structures.
 
-![Truth Seeker AI Dashboard](https://assets.unicorn.studio/media/made_in_us_small_web.svg) *(Styling preview)*
 
 ## 🚀 Key Features
 
