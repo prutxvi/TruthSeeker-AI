@@ -81,7 +81,7 @@ export default function HeroAsciiOne() {
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-black">
-      <div className="absolute inset-0 hidden lg:block">
+      <div className="absolute inset-0 z-0 pointer-events-none lg:pointer-events-auto">
         <div data-us-project="OMzqyUv6M3kSnv0JeAtC" style={{ width: '100%', height: '100%', minHeight: '100vh' }} />
         {/* Solid black overlay to cover UnicornStudio watermark at bottom */}
         <div className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none" style={{ height: '80px' }}>

@@ -34,6 +34,7 @@ export default function ChatPage() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamingContent, setStreamingContent] = useState('');
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const exportLog = () => {
@@ -143,6 +144,7 @@ export default function ChatPage() {
   const createNewSession = () => {
     setActiveConvId(null);
     setMessages([]);
+    setIsSidebarOpen(false);
   };
 
   const deleteConversation = async (e: React.MouseEvent, cid: string) => {
@@ -268,12 +270,24 @@ export default function ChatPage() {
   const activeConv = conversations.find(c => c.id === activeConvId);
 
   return (
-    <div className="flex h-screen bg-black text-white font-mono overflow-hidden">
+    <div className="flex h-screen bg-black text-white font-mono overflow-hidden relative">
+      
+      {/* MOBILE OVERLAY */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/80 z-40 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* LEFT SIDEBAR */}
-      <div className="w-72 bg-black border-r border-white/20 flex flex-col flex-shrink-0">
-        <div className="py-4 px-4 border-b border-white/20">
-          <div className="font-mono font-bold italic -skew-x-12 text-lg tracking-widest">TRUTH SEEKER</div>
-          <div className="text-white/60 text-[10px] mt-1">EST. 2026</div>
+      <div className={`fixed inset-y-0 left-0 w-72 bg-black border-r border-white/20 flex flex-col flex-shrink-0 z-50 transform transition-transform duration-300 md:relative md:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="py-4 px-4 border-b border-white/20 flex justify-between items-center">
+          <div>
+            <div className="font-mono font-bold italic -skew-x-12 text-lg tracking-widest">TRUTH SEEKER</div>
+            <div className="text-white/60 text-[10px] mt-1">EST. 2026</div>
+          </div>
+          <button className="md:hidden text-white/50 hover:text-white" onClick={() => setIsSidebarOpen(false)}>[ X ]</button>
         </div>
         
         <button 
@@ -317,8 +331,15 @@ export default function ChatPage() {
 
       {/* RIGHT CHAT */}
       <div className="flex-1 flex flex-col min-w-0">
-        <div className="border-b border-white/20 px-6 py-4 flex items-center bg-black sticky top-0 z-10 w-full overflow-x-auto gap-4">
-          <div className="font-mono text-sm text-white truncate flex-1 min-w-[200px]">
+        <div className="border-b border-white/20 px-4 md:px-6 py-4 flex items-center bg-black sticky top-0 z-10 w-full overflow-x-auto gap-3 md:gap-4">
+          <button 
+            className="md:hidden text-white border border-white/20 p-1 flex-shrink-0"
+            onClick={() => setIsSidebarOpen(true)}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          </button>
+          
+          <div className="font-mono text-sm text-white truncate flex-1 min-w-[120px]">
             SESSION: {activeConv ? activeConv.title : 'NEW_UNINITIALIZED_SESSION'}
           </div>
           
@@ -326,18 +347,20 @@ export default function ChatPage() {
             <div className="flex gap-2 items-center flex-shrink-0">
               <button 
                 onClick={exportLog} 
-                className="border border-white/20 text-white/60 hover:bg-white hover:text-black font-mono text-[10px] sm:text-xs px-2 sm:px-3 py-1 transition-colors whitespace-nowrap"
+                className="border border-white/20 text-white/60 hover:bg-white hover:text-black font-mono text-[10px] md:text-xs px-2 py-1 md:px-3 transition-colors whitespace-nowrap"
                 title="Download raw markdown log"
               >
-                [ EXPORT LOG ]
+                <span className="hidden md:inline">[ EXPORT LOG ]</span>
+                <span className="md:hidden">EXPORT</span>
               </button>
               <button 
                 onClick={generateReport} 
                 disabled={isGeneratingReport}
-                className="border border-white/40 bg-white/5 text-white hover:bg-white hover:text-black font-mono text-[10px] sm:text-xs px-2 sm:px-3 py-1 transition-colors disabled:opacity-50 whitespace-nowrap"
+                className="border border-white/40 bg-white/5 text-white hover:bg-white hover:text-black font-mono text-[10px] md:text-xs px-2 py-1 md:px-3 transition-colors disabled:opacity-50 whitespace-nowrap"
                 title="Generate an AI Summary Report"
               >
-                {isGeneratingReport ? '[ GENERATING... ]' : '[ SUMMARY REPORT ]'}
+                <span className="hidden md:inline">{isGeneratingReport ? '[ GENERATING... ]' : '[ SUMMARY REPORT ]'}</span>
+                <span className="md:hidden">{isGeneratingReport ? 'GEN...' : 'REPORT'}</span>
               </button>
             </div>
           )}
@@ -347,17 +370,17 @@ export default function ChatPage() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
           {messages.length === 0 && !isStreaming ? (
-            <div className="h-full flex flex-col items-center justify-center">
-              <div className="font-mono text-white/40 text-2xl">AWAITING QUERY<span className="cursor-blink">_</span></div>
-              <div className="text-white/40 text-xs tracking-widest mt-8 mb-4">SUGGESTED QUERIES:</div>
-              <div className="grid grid-cols-2 gap-4 max-w-2xl">
+            <div className="h-full flex flex-col items-center justify-center pt-10">
+              <div className="font-mono text-white/40 text-xl md:text-2xl text-center">AWAITING QUERY<span className="cursor-blink">_</span></div>
+              <div className="text-white/40 text-[10px] md:text-xs tracking-widest mt-8 mb-4">SUGGESTED QUERIES:</div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 max-w-2xl w-full px-4 text-center">
                 {getSuggestedQueries().map((q, idx) => (
                   <div 
                     key={idx}
                     onClick={() => setInput(q)}
-                    className="border border-white/20 p-4 font-mono text-xs text-white/70 hover:bg-white/5 cursor-pointer transition-colors"
+                    className="border border-white/20 p-3 md:p-4 font-mono text-[10px] md:text-xs text-white/70 hover:bg-white/5 cursor-pointer transition-colors"
                   >
                     {q}
                   </div>
@@ -367,26 +390,26 @@ export default function ChatPage() {
           ) : (
             <>
               {messages.map(msg => (
-                <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'gap-3 items-start'}`}>
+                <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'gap-2 md:gap-3 items-start'}`}>
                   {msg.role === 'assistant' && (
-                    <div className="border border-white/40 w-8 h-8 font-mono text-[10px] flex items-center justify-center flex-shrink-0">
+                    <div className="border border-white/40 w-6 h-6 md:w-8 md:h-8 font-mono text-[9px] md:text-[10px] flex items-center justify-center flex-shrink-0">
                       AI
                     </div>
                   )}
-                  <div className={`font-mono text-sm px-5 py-4 w-full max-w-3xl break-words
+                  <div className={`font-mono text-xs md:text-sm px-4 py-3 md:px-5 md:py-4 w-full max-w-3xl break-words
                     ${msg.role === 'user' 
                       ? 'bg-white text-black' 
-                      : 'bg-black border border-white/20 text-white prose prose-sm prose-invert prose-p:leading-relaxed prose-headings:font-bold prose-headings:tracking-widest prose-headings:text-white prose-a:text-white prose-a:underline prose-strong:text-white prose-code:text-white prose-pre:bg-white/5 prose-pre:border prose-pre:border-white/10 prose-hr:border-white/20 max-w-none'}`}>
+                      : 'bg-black border border-white/20 text-white prose prose-sm prose-invert prose-p:leading-relaxed prose-headings:font-bold prose-headings:tracking-widest prose-headings:text-white prose-a:text-white prose-a:underline prose-strong:text-white prose-code:text-white prose-pre:bg-white/5 prose-pre:border prose-pre:border-white/10 prose-hr:border-white/20 max-w-[90vw] md:max-w-none'}`}>
                     {msg.role === 'user' ? msg.content : <ReactMarkdown>{msg.content}</ReactMarkdown>}
                   </div>
                 </div>
               ))}
               {isStreaming && (
-                <div className="flex gap-3 items-start">
-                  <div className="border border-white/40 w-8 h-8 font-mono text-[10px] flex items-center justify-center flex-shrink-0">
+                <div className="flex gap-2 md:gap-3 items-start">
+                  <div className="border border-white/40 w-6 h-6 md:w-8 md:h-8 font-mono text-[9px] md:text-[10px] flex items-center justify-center flex-shrink-0">
                     AI
                   </div>
-                  <div className="bg-black border border-white/20 text-white font-mono text-sm px-5 py-4 w-full max-w-3xl break-words prose prose-sm prose-invert prose-p:leading-relaxed prose-headings:font-bold prose-headings:tracking-widest prose-headings:text-white prose-a:text-white prose-a:underline prose-strong:text-white prose-code:text-white prose-pre:bg-white/5 prose-pre:border prose-pre:border-white/10 prose-hr:border-white/20 max-w-none">
+                  <div className="bg-black border border-white/20 text-white font-mono text-xs md:text-sm px-4 py-3 md:px-5 md:py-4 w-full max-w-3xl break-words prose prose-sm prose-invert prose-p:leading-relaxed prose-headings:font-bold prose-headings:tracking-widest prose-headings:text-white prose-a:text-white prose-a:underline prose-strong:text-white prose-code:text-white prose-pre:bg-white/5 prose-pre:border prose-pre:border-white/10 prose-hr:border-white/20 max-w-[90vw] md:max-w-none">
                     {streamingContent ? <ReactMarkdown>{streamingContent}</ReactMarkdown> : <span className="opacity-50">PROCESSING</span>}
                     <span className="cursor-blink ml-1 text-white">█</span>
                   </div>
@@ -408,14 +431,14 @@ export default function ChatPage() {
                   queries = getSuggestedQueries();
                 }
                 return (
-                  <div className="mt-4 max-w-3xl ml-11">
-                    <div className="text-white/40 text-xs tracking-widest mb-3">SUGGESTED QUERIES:</div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="mt-4 max-w-3xl ml-8 md:ml-11">
+                    <div className="text-white/40 text-[10px] md:text-xs tracking-widest mb-3">SUGGESTED QUERIES:</div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3">
                       {queries.slice(0, 4).map((q, idx) => (
                         <div
                           key={idx}
                           onClick={() => setInput(q)}
-                          className="border border-white/20 p-3 font-mono text-xs text-white/70 hover:bg-white/5 hover:border-white/40 cursor-pointer transition-all"
+                          className="border border-white/20 p-2 md:p-3 font-mono text-[10px] md:text-xs text-white/70 hover:bg-white/5 hover:border-white/40 cursor-pointer transition-all"
                         >
                           {q.toUpperCase()}
                         </div>
@@ -430,23 +453,23 @@ export default function ChatPage() {
           )}
         </div>
 
-        <div className="border-t border-white/20 p-4">
+        <div className="border-t border-white/20 p-2 md:p-4">
           <div className="relative max-w-4xl mx-auto">
             <textarea 
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               disabled={isStreaming}
-              rows={3}
+              rows={2}
               placeholder="ENTER QUERY..."
-              className="bg-black border border-white/30 text-white font-mono text-sm p-4 w-full resize-none focus:border-white outline-none placeholder:text-white/30 disabled:opacity-50"
+              className="bg-black border border-white/30 text-white font-mono text-base md:text-sm p-3 md:p-4 w-full resize-none focus:border-white outline-none placeholder:text-white/30 disabled:opacity-50"
             />
-            <div className="flex justify-between items-center mt-2">
-              <div className="text-[9px] font-mono text-white/30">SHIFT+ENTER NEW LINE</div>
+            <div className="flex justify-between items-center mt-2 px-1">
+              <div className="text-[8px] md:text-[9px] font-mono text-white/30 hidden sm:block">SHIFT+ENTER NEW LINE</div>
               <button 
                 onClick={handleSend}
                 disabled={isStreaming || !input.trim()}
-                className="bg-white text-black font-mono text-xs px-6 py-2 disabled:opacity-30 hover:bg-white/90 transition-colors"
+                className="bg-white text-black font-mono text-[10px] md:text-xs px-4 md:px-6 py-2 disabled:opacity-30 hover:bg-white/90 transition-colors ml-auto"
               >
                 [ TRANSMIT → ]
               </button>
