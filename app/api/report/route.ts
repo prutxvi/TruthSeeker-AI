@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest } from 'next/server';
-import Groq from 'groq-sdk';
+import OpenAI from 'openai';
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+const client = new OpenAI({
+  apiKey: process.env.NVIDIA_API_KEY,
+  baseURL: 'https://integrate.api.nvidia.com/v1',
+});
 
 const REPORT_SYSTEM = `You are a high-level Intelligence Analyst. Your task is to review the provided chat transcript between a user and TRUTH SEEKER AI, and generate a highly professional, brutally objective INTELLIGENCE SUMMARY REPORT.
 
@@ -22,8 +25,8 @@ export async function POST(req: NextRequest) {
     // Convert the message history into a single string to feed the AI
     const transcript = messages.map((m: any) => `[${m.role.toUpperCase()}]: ${m.content}`).join('\n\n');
 
-    const response = await groq.chat.completions.create({ 
-      model: 'llama-3.3-70b-versatile', 
+    const response = await client.chat.completions.create({ 
+      model: 'meta/llama-3.3-70b-instruct', 
       messages: [
         { role: 'system', content: REPORT_SYSTEM },
         { role: 'user', content: `Here is the transcript to process:\n\n${transcript}` }
